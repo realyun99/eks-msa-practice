@@ -1,0 +1,56 @@
+# Create Cluster
+eksctl create cluster --name=realyun-eks \
+                      --region=ap-northeast-2 \
+                      --zones=ap-northeast-2a,ap-northeast-2c \
+                      --without-nodegroup 
+
+# Get List of clusters
+eksctl get cluster                  
+
+# Template
+eksctl utils associate-iam-oidc-provider \
+    --region <region code> \
+    --cluster <cluster-name> \
+    --approve
+
+# Replace with region & cluster name
+eksctl utils associate-iam-oidc-provider \
+    --region ap-northeast-2 \
+    --cluster realyun-eks \ 
+    --approve
+
+# Create Public Node Group   
+eksctl create nodegroup --cluster=realyun-eks \
+                       --region=ap-northeast-2 \
+                       --name=realyun-eks-ng-public1 \
+                       --node-type=t3.medium \
+                       --nodes=2 \
+                       --nodes-min=2 \
+                       --nodes-max=4 \
+                       --node-volume-size=20 \
+                       --ssh-access \
+                       --ssh-public-key=realyun-test-key \
+                       --managed \
+                       --asg-access \
+                       --external-dns-access \
+                       --full-ecr-access \
+                       --appmesh-access \
+                       --alb-ingress-access 
+
+# List EKS clusters
+eksctl get cluster
+
+# List NodeGroups in a cluster
+eksctl get nodegroup --cluster=realyun-eks
+
+# List Nodes in current kubernetes cluster
+kubectl get nodes -o wide
+
+# Our kubectl context should be automatically changed to new cluster
+kubectl config view --minify
+
+# For MAC or Linux or Windows10
+ssh -i kube-demo.pem ec2-user@<Public-IP-of-Worker-Node>
+
+# For Windows 7
+Use putty
