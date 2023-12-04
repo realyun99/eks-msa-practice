@@ -1,0 +1,27 @@
+# Create Deployment for Backend Rest App
+kubectl create deployment my-backend-rest-app --image=stacksimplify/kube-helloworld:1.0.0 
+kubectl get deploy
+
+# Create ClusterIp Service for Backend Rest App
+kubectl expose deployment my-backend-rest-app --port=8080 --target-port=8080 --name=my-backend-service
+kubectl get svc
+Observation: We don't need to specify "--type=ClusterIp" because default setting is to create ClusterIp Service. 
+
+# Create Deployment for Frontend Nginx Proxy
+kubectl create deployment my-frontend-nginx-app --image=stacksimplify/kube-frontend-nginx:1.0.0 
+kubectl get deploy
+
+# Create ClusterIp Service for Frontend Nginx Proxy
+kubectl expose deployment my-frontend-nginx-app  --type=NodePort --port=80 --target-port=80 --name=my-frontend-service
+kubectl get svc
+
+# Capture IP and Port to Access Application
+kubectl get svc
+kubectl get nodes -o wide
+http://<node1-public-ip>:<Node-Port>/hello
+
+# Scale backend with 10 replicas
+kubectl scale --replicas=10 deployment/my-backend-rest-app
+
+# Test again to view the backend service Load Balancing
+http://<node1-public-ip>:<Node-Port>/hello

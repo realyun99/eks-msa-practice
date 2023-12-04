@@ -1,0 +1,87 @@
+# Create Deployment
+kubectl create deployment <Deplyment-Name> --image=<Container-Image>
+kubectl create deployment my-first-deployment --image=stacksimplify/kubenginx:1.0.0 
+
+# Verify Deployment
+kubectl get deployments
+kubectl get deploy 
+
+# Describe Deployment
+kubectl describe deployment <deployment-name>
+kubectl describe deployment my-first-deployment
+
+# Scale Up the Deployment
+kubectl scale --replicas=20 deployment/<Deployment-Name>
+kubectl scale --replicas=20 deployment/my-first-deployment 
+
+# Scale Down the Deployment
+kubectl scale --replicas=10 deployment/my-first-deployment 
+kubectl get deploy
+
+# Expose Deployment as a Service
+kubectl expose deployment <Deployment-Name>  --type=NodePort --port=80 --target-port=80 --name=<Service-Name-To-Be-Created>
+kubectl expose deployment my-first-deployment --type=NodePort --port=80 --target-port=80 --name=my-first-deployment-service
+
+# Verify Rollout Status 
+kubectl rollout status deployment/my-first-deployment
+
+# Check the Rollout History of a Deployment
+kubectl rollout history deployment/<Deployment-Name>
+kubectl rollout history deployment/my-first-deployment 
+
+# Edit Deployment
+kubectl edit deployment/<Deployment-Name> --record=true
+kubectl edit deployment/my-first-deployment --record=true
+
+# Verify Rollout Status 
+kubectl rollout status deployment/my-first-deployment
+
+# List Deployment History with revision information
+kubectl rollout history deployment/my-first-deployment --revision=1
+kubectl rollout history deployment/my-first-deployment --revision=2
+kubectl rollout history deployment/my-first-deployment --revision=3
+
+# Undo Deployment
+kubectl rollout undo deployment/my-first-deployment
+
+# Rolling Restarts
+kubectl rollout restart deployment/<Deployment-Name>
+kubectl rollout restart deployment/my-first-deployment
+
+# Pause the Deployment
+kubectl rollout pause deployment/<Deployment-Name>
+kubectl rollout pause deployment/my-first-deployment
+
+# Update Deployment - Application Version from V3 to V4
+kubectl set image deployment/my-first-deployment kubenginx=stacksimplify/kubenginx:4.0.0 --record=true
+
+# Check the Rollout History of a Deployment
+kubectl rollout history deployment/my-first-deployment  
+Observation: No new rollout should start, we should see same number of versions as we check earlier with last version number matches which we have noted earlier.
+
+# Get list of ReplicaSets
+kubectl get rs
+Observation: No new replicaSet created. We should have same number of replicaSets as earlier when we took note. 
+
+# Make one more change: set limits to our container
+kubectl set resources deployment/my-first-deployment -c=kubenginx --limits=cpu=20m,memory=30Mi
+
+# Resume the Deployment
+kubectl rollout resume deployment/my-first-deployment
+
+# Check the Rollout History of a Deployment
+kubectl rollout history deployment/my-first-deployment  
+Observation: You should see a new version got created
+
+# Get list of ReplicaSets
+kubectl get rs
+Observation: You should see new ReplicaSet.
+
+# Delete Deployment
+kubectl delete deployment my-first-deployment
+
+# Delete Service
+kubectl delete svc my-first-deployment-service
+
+# Get all Objects from Kubernetes default namespace
+kubectl get all
